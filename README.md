@@ -5,7 +5,7 @@ Pipeline: raw GPS → candidate road arcs (≤12 within 80 m) → 19 features �
 
 ## Layout
 - `pathsnap/` library: `geo` (loading, local metric projection), `labels` (route alignment, training/eval only), `candidates`, `hmm`, `pipeline`, `metrics`
-- `scripts/` experiments: `00_build_dataset` (candidates, features, labels), `01_compare_models`, `02_tune_bayes` (Optuna), `03_hmm_and_final` (HMM tuning, final model), `04/08` EDA, `05/11` figures, `06/06b` route plots + Folium maps, `07` tuned-vs-untuned, `09` report builder, `10` training curves
+- `scripts/` experiments: `00_build_dataset` (candidates, features, labels), `01_compare_models`, `02_tune_bayes` (Optuna), `03_hmm_and_final` (HMM tuning, final model), `04/08` EDA, `05/11` figures, `06/06b` route plots + Folium maps, `07` tuned-vs-untuned, `12` candidate graphs, `13` evaluator run, `09` report builder, `10` training curves
 - `api/main.py` FastAPI backend (Laptop 1) · `ui/index.html` UI (Laptop 2)
 - `artifacts/model.joblib`, `artifacts/hmm_config.json` inference assets (`dataset.pkl` is a regenerable cache, git-ignored)
 - `results/` metrics, logs, figures · `report/PathSnap_Report.pdf` technical report (built by `scripts/09_build_report.py`)
@@ -22,6 +22,8 @@ python scripts/04_explore.py && python scripts/08_eda_plots.py      # EDA tables
 python scripts/05_figures.py && python scripts/11_extra_figures.py   # comparison / Bayes / HMM figures
 python scripts/07_tuned_vs_untuned.py && python scripts/10_training_curves.py
 python scripts/06_visualise.py && python scripts/06b_folium_maps.py # route plots + interactive Folium maps
+python scripts/12_candidate_plots.py                                   # candidate-generation graphs
+EVAL_DIR=/path/to/evaluator_test python scripts/13_evaluator_run.py  # final evaluation on evaluator trips (after development)
 python scripts/09_build_report.py                                    # builds report/PathSnap_Report.pdf (needs Google Chrome)
 ```
 Scripts 01-06 read `PATHSNAP_DATA` (default in `scripts/common.py` is a local path - set the variable).
