@@ -3,8 +3,9 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
- body{margin:0;font-family:system-ui,sans-serif;display:flex;height:100vh}
- #side{width:340px;padding:14px;overflow:auto;border-right:1px solid #ddd;box-sizing:border-box}
+ :root{color-scheme:light}
+ body{margin:0;font-family:system-ui,sans-serif;display:flex;height:100vh;background:#fff;color:#111}
+ #side{background:#fff;width:340px;padding:14px;overflow:auto;border-right:1px solid #ddd;box-sizing:border-box}
  #map{flex:1}
  h1{font-size:20px;margin:0 0 8px} input{width:100%;padding:6px;box-sizing:border-box}
  button.trip{display:block;width:100%;text-align:left;padding:8px;margin:4px 0;border:1px solid #ccc;border-radius:6px;background:#fff;cursor:pointer}
@@ -46,6 +47,7 @@ async function run(id,btn){
     const g=L.layerGroup(pts).addTo(map);layers.push(g);
     const line=L.polyline(d.route,{color:'#e11d48',weight:4,opacity:.85}).addTo(map);layers.push(line);
     map.fitBounds(line.getBounds().extend(d.gps));
+    if(!d.metrics){$('status').textContent='Predicted (no reference available on server)';return}
     const m=d.metrics,h=m.hmm,c=m.clf;
     $('result').innerHTML=`<div class="big">${pct(h.pointwise_accuracy)}</div><div class="muted">pointwise accuracy (classifier + HMM)</div>
      <table><tr><th></th><th>Classifier</th><th>+HMM</th></tr>
@@ -59,4 +61,5 @@ async function run(id,btn){
   }catch(e){$('status').textContent='Error: '+e}
 }
 $('load').onclick=loadTrips;
+loadTrips();
 </script></body></html>
