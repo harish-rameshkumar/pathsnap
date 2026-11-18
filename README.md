@@ -5,10 +5,10 @@ Pipeline: raw GPS → candidate road arcs (≤12 within 80 m) → 19 features �
 
 ## Layout
 - `pathsnap/` library: `geo` (loading, local metric projection), `labels` (route alignment, training/eval only), `candidates`, `hmm`, `pipeline`, `metrics`
-- `scripts/` experiments (run in order): `00_build_dataset`, `01_compare_models`, `02_tune_bayes`, `03_hmm_and_final`, `04_explore`, `05_figures`
+- `scripts/` experiments: `00_build_dataset` (candidates, features, labels), `01_compare_models`, `02_tune_bayes` (Optuna), `03_hmm_and_final` (HMM tuning, final model), `04/08` EDA, `05/11` figures, `06/06b` route plots + Folium maps, `07` tuned-vs-untuned, `09` report builder, `10` training curves
 - `api/main.py` FastAPI backend (Laptop 1) · `ui/index.html` UI (Laptop 2)
 - `artifacts/model.joblib`, `artifacts/hmm_config.json` inference assets (`dataset.pkl` is a regenerable cache, git-ignored)
-- `results/` metrics, logs, figures · `REPORT.md` technical report
+- `results/` metrics, logs, figures · `report/PathSnap_Report.pdf` technical report (built by `scripts/09_build_report.py`)
 
 ## Setup (run everything from the project root)
 ```bash
@@ -18,7 +18,11 @@ python scripts/00_build_dataset.py "$PATHSNAP_DATA"  # builds artifacts/dataset.
 python scripts/01_compare_models.py                  # 9-model comparison  (~10 min)
 python scripts/02_tune_bayes.py 40                   # Optuna tuning       (~18 min)
 python scripts/03_hmm_and_final.py                   # HMM tuning, final model, artifacts (~5 min)
-python scripts/04_explore.py && python scripts/05_figures.py && python scripts/06_visualise.py   # report figures
+python scripts/04_explore.py && python scripts/08_eda_plots.py      # EDA tables/plots
+python scripts/05_figures.py && python scripts/11_extra_figures.py   # comparison / Bayes / HMM figures
+python scripts/07_tuned_vs_untuned.py && python scripts/10_training_curves.py
+python scripts/06_visualise.py && python scripts/06b_folium_maps.py # route plots + interactive Folium maps
+python scripts/09_build_report.py                                    # builds report/PathSnap_Report.pdf (needs Google Chrome)
 ```
 Scripts 01-06 read `PATHSNAP_DATA` (default in `scripts/common.py` is a local path - set the variable).
 The API needs only `artifacts/model.joblib` and `artifacts/hmm_config.json`, both committed, so steps above are not required to run it.

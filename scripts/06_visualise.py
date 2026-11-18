@@ -1,5 +1,5 @@
 """Report visualisations: predicted vs reference routes (static PNG + interactive folium) and confusion matrices."""
-import json, numpy as np, matplotlib
+import json, numpy as np, matplotlib  # interactive Folium maps live in 06b_folium_maps.py
 matplotlib.use("Agg"); import matplotlib.pyplot as plt, folium
 from common import *
 from pathsnap.geo import load_trip
@@ -21,14 +21,6 @@ for ax, tid in zip(axes, TRIPS):
     wrong = res["hmm"] != ref
     ax.scatter(xy[:, 0], xy[:, 1], s=2, c="blue", alpha=.5); ax.scatter(xy[wrong, 0], xy[wrong, 1], s=8, c="orange")
     ax.set_aspect("equal"); ax.set_title(f"trip {tid}: HMM acc {pointwise(res['hmm'], ref):.3f}\ngreen=reference, red=predicted, blue=GPS, orange=mismatched fixes", fontsize=9)
-    # interactive map
-    poly, _ = pred.route_polyline(res)
-    m = folium.Map(location=[trip.lat0, trip.lon0], zoom_start=13)
-    rp = [[trip.nodes_ll[x][1], trip.nodes_ll[x][0]] for a in ref_trip.route for x in trip.arcs[a]]
-    folium.PolyLine(rp, color="green", weight=7, opacity=.5, tooltip="reference route").add_to(m)
-    folium.PolyLine(poly, color="red", weight=3, tooltip="predicted (classifier+HMM)").add_to(m)
-    for p in trip.lonlat[::4]: folium.CircleMarker([p[1], p[0]], radius=2, color="blue", weight=1).add_to(m)
-    m.save(os.path.join(F, f"map_pred_vs_ref_{tid}.html"))
 plt.tight_layout(); plt.savefig(F + "/routes_pred_vs_ref.png", dpi=110); plt.close()
 # confusion matrices (student-test, row level, threshold 0.5)
 mc = json.load(open(os.path.join(ROOT, "results/model_comparison.json")))
