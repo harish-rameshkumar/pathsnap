@@ -52,6 +52,11 @@ Optuna TPE (8 random start trials), 40 trials, 5-fold GroupKFold on training tri
 
 The HMM adds ~2 points pointwise accuracy and ~6 points continuity; tuning the classifier adds only ~0.3 point (probably within noise) – the HMM does most of the work. Per trip, the HMM lowers accuracy on trips 00000040 and 00000091 (see `figures/clf_vs_hmm.png`); weakest trip is 00000077 (0.845, continuity 0.77). Remaining continuity <1 stems from shortest-path jumps across GPS gaps and from alignment/label noise.
 
+## 7b. Geographical visualisations and error analysis
+- `results/figures/routes_pred_vs_ref.png`: predicted (red) vs reference (green) routes with GPS (blue) and mismatched fixes (orange) for student trips 00000007 (acc 0.995), 00000056 (0.953) and 00000077 (0.845). Predictions follow the reference route closely at city scale; remaining mismatches are mostly local (junction areas, parallel/duplicate carriageways, reverse-direction arcs).
+- Interactive Folium maps: `results/figures/map_pred_vs_ref_<trip>.html`; raw data example `trip_00000034_map.html`.
+- Confusion matrices (row-level, threshold 0.5) for all 9 models: `results/figures/confusion_matrices.png`; other plots: `model_comparison.png`, `bayes_opt.png`, `clf_vs_hmm.png`, `dataset_overview.png`.
+
 ## 8. Limitations
 Labels depend on my route-to-GPS alignment; reference routes have mismatches (trips 33, 54). Decoder tuned for pointwise accuracy only. Student-test (10 trips) is small; the evaluator set was never used for any choice. Continuity counts arc changes that are directly adjacent only.
 
